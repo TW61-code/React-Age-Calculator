@@ -3,9 +3,9 @@ import { useState } from "react";
 
 function App() {
 
-  const [birthdayDay, setBirthdayDay] = useState();
-  const [birthdayMonth, setBirthdayMonth] = useState();
-  const [birthdayYear, setBirthdayYear] = useState();
+  const [dayValue,   setDayValue] = useState();
+  const [monthValue, setMonthValue] = useState();
+  const [yearValue, setYearValue] = useState();
   const [daysOld, setDaysOld] = useState("--");
   const [monthsOld, setMonthsOld] = useState("--");
   const [yearsOld, setYearsOld] = useState("--");
@@ -33,23 +33,23 @@ function App() {
     return daysInMonths[month];
   }
 
-  function handleBirthdayDayChange(e) {
+  function handleDayValueChange(e) {
     e.preventDefault();
-    setBirthdayDay(e.target.value);
+    setDayValue(e.target.value.length === 3 ? e.target.value.slice(0, 2) : e.target.value);
     // Clear error value when user starts typing.
     setErrors(prev => ({...prev, dayInput: ""}))
   }
 
-  function handleBirthdayMonthChange(e) {
+  function handleMonthValueChange(e) {
     e.preventDefault();
-    setBirthdayMonth(e.target.value);
+    setMonthValue(e.target.value.length === 3 ? e.target.value.slice(0, 2) : e.target.value);
     // Clear error value when user starts typing.
     setErrors(prev => ({...prev, monthInput: ""}))
   }
 
-  function handleBirthdayYearChange(e) {
+  function handleYearValueChange(e) {
     e.preventDefault();
-    setBirthdayYear(e.target.value);
+    setYearValue(e.target.value.length === 5 ? e.target.value.slice(0, 4) : e.target.value);
     // Clear error value when user starts typing.
     setErrors(prev => ({...prev, yearInput: ""}))
   }
@@ -59,15 +59,38 @@ function App() {
   }
 
   function calculateAge(e) {
-
+    
     e.preventDefault();
 
+    const day = parseInt(dayValue);
+    const month = parseInt(monthValue);
+    const year = parseInt(yearValue);
+
     const currentDate = new Date();
-    const birthday = new Date(birthdayYear, birthdayMonth - 1, birthdayDay);
+    const birthday = new Date(year, month - 1, day);
 
     let yearsOld = currentDate.getFullYear() - birthday.getFullYear();
     let monthsOld = currentDate.getMonth() - birthday.getMonth();
     let daysOld = currentDate.getDate() - birthday.getDate();
+
+    if (isNaN(day) || day > daysInMonth(month, year) || day < 1) {
+      newErrors.dayInput = `Must be a valid day`;
+    } 
+    if (isNaN(month) || month > 12 || month < 1) {
+      newErrors.monthInput = "Must be a valid month";
+    } 
+    if (isNaN(year) || year > currentDate.getFullYear()) {
+      newErrors.yearInput = "Must be in the past";
+    } else if (year < 1900) {
+      newErrors.yearInput = "1900 is minnimum year";
+    } else if (isLeapYear(year) && month === 2 && day === 29) {
+      setErrors(prev => ({...prev, dayInput: ""}))
+    }
+
+    if (Object.keys(newErrors).length) {
+      setErrors(newErrors);
+      return;
+    }
 
     if (daysOld < 0) {
       monthsOld--;
@@ -75,44 +98,60 @@ function App() {
       const prevMonthYear = prevMonth === 11 ? currentDate.getFullYear() - 1 : currentDate.getFullYear();
       daysOld += daysInMonth(prevMonth + 1, prevMonthYear);
     } 
-
+    
     if (monthsOld < 0) {
       yearsOld--;
       monthsOld += 12;
     }
 
-    setYearsOld(yearsOld);
-    setMonthsOld(monthsOld);
     setDaysOld(daysOld);
-  }
-
-  if (birthdayDay > daysInMonth(birthdayMonth, birthdayYear)) {
-    alert("yo");
+    setMonthsOld(monthsOld);
+    setYearsOld(yearsOld);
   }
 
   return (
     <div className="App">
       <form onSubmit={calculateAge}>
         <div className="input-container">
-          <label>DAY</label>
-          <input type="text" value={birthdayDay} onChange={handleBirthdayDayChange}></input>
+          <label style={{color: errors.dayInput && "hsl(0, 100%, 67%)"}}>DAY</label>
+          <input type="text" 
+                 className={Object.keys(newErrors).length ? "invalid" : "date-input"}
+                 value={dayValue} 
+                 onChange={handleDayValueChange}
+                 style={{border: errors.dayInput && "1px solid hsl(0, 100%, 67%)"}}
+                 autofocus
+          />
+          {errors.dayInput && <p>{errors.dayInput}</p>}
         </div>
+
         <div className="input-container">
-        <label>MONTH</label>
-          <input type="text" value={birthdayMonth} onChange={handleBirthdayMonthChange}></input>
+          <label style={{color: errors.monthInput && "hsl(0, 100%, 67%)"}}>MONTH</label>
+          <input type="text" 
+                 value={monthValue} 
+                 onChange={handleMonthValueChange}
+                 style={{border: errors.monthInput && "1px solid hsl(0, 100%, 67%)"}}
+          />
+          {errors.monthInput && <p>{errors.monthInput}</p>}
         </div>
+
         <div className="input-container">
-        <label>YEAR</label>
-          <input type="text" value={birthdayYear} onChange={handleBirthdayYearChange}></input>
+          <label style={{color: errors.yearInput && "hsl(0, 100%, 67%)"}}>YEAR</label>
+          <input type="text" 
+                 value={yearValue} 
+                 onChange={handleYearValueChange}
+                 style={{border: errors.yearInput && "1px solid hsl(0, 100%, 67%)"}}   
+          />
+          {errors.yearInput && <p>{errors.yearInput}</p>}
         </div>
+
         <button className="submit-btn">Submit</button>
       </form>
 
       <main>
         <div className="display-age-container">
-          <h1><span>{yearsOld}</span> years</h1>
-          <h1><span>{monthsOld}</span> months</h1>
-          <h1><span>{daysOld}</span> days</h1>
+          <h1><span>{yearsOld}</span><i>years</i></h1>
+          <h1><span>{monthsOld}</span><i>months</i></h1>
+          <h1><span>{daysOld}</span><i>days</i></h1>
         </div>
       </main>
     </div>

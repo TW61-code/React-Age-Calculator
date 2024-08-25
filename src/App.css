@@ -1,35 +1,57 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
+
 :root {
   --primary-font-color: hsl(259, 100%, 65%);
   --primary-error-color: hsl(0, 100%, 67%);
+  --primary-border-color: hsl(0, 0%, 86%);
+  --primary-body-backgroundColor: hsl(0, 0%, 90%);
 }
 
 body {
-  font-family: helvetica;
+  font-family: "Poppins";
+  /*Just to pop the contrast... REMOVE*/
+  padding: 50px 0;
+  background: var(--primary-body-backgroundColor);
 }
 
 .App {
-  padding: 50px 15px;
+  max-width: 375px;
+  padding: 45px 20px;
+  background: white;
+  border-radius: 25px 25px 125px 25px;
 }
 
 form {
   position: relative;
   display: flex;
   justify-content: space-between;
-  border-bottom: 1px solid hsl(0, 0%, 80%);
-  margin-bottom: 80px;
-  padding-bottom: 100px;
+  border-bottom: 1px solid var(--primary-border-color);
+  margin-bottom: 50px;
+  padding-bottom: 75px;
 }
 
 .input-container {
-  width: 30%;
+  width: 110px;
+}
+
+label {   
+  color: hsl(0, 1%, 44%);
+  font-weight: bold;
 }
 
 input {
-  width: 90%;
-  padding: 12px 5px;
-  font-size: 2em;
+  font-size: 32px;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 15px 10px;
   border-radius: 10px;
-  border: 1px solid hsl(0, 0%, 80%);
+  border: 1px solid var(--primary-border-color);
+  font-weight: 800;
+}
+input:focus {
+  outline: none;
+  border: 1px inset var(--primary-font-color);
 }
 
 button {
@@ -54,4 +76,9 @@ h1 {
 }
 span {
   color: var(--primary-font-color);
+}
+
+p  {
+  font-size: 0.6em;
+  color: hsl(0, 100%, 67%);
 }
