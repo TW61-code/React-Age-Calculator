@@ -11,6 +11,7 @@ function App() {
   const [monthsOld, setMonthsOld] = useState("--");
   const [yearsOld, setYearsOld] = useState("--");
   const [errors, setErrors] = useState({});
+  const [rotate, setRotate] = useState(false);
 
   // Create an object to store error values when user interactions are not valid
   const newErrors = {};
@@ -36,23 +37,38 @@ function App() {
 
   function handleDayValueChange(e) {
     e.preventDefault();
-    setDayValue(e.target.value.length === 3 ? e.target.value.slice(0, 2) : e.target.value);
+    if (e.target.value.length === 3) {
+      setDayValue(e.target.value.slice(0, 2));
+      setRotate(!rotate);
+    } else {
+      setDayValue(e.target.value);
+    }
     // Clear error value when user starts typing.
     setErrors(prev => ({...prev, dayInput: ""}))
   }
 
   function handleMonthValueChange(e) {
     e.preventDefault();
-    setMonthValue(e.target.value.length === 3 ? e.target.value.slice(0, 2) : e.target.value);
+    if (e.target.value.length === 3) {
+      setMonthValue(e.target.value.slice(0, 2));
+      setRotate(!rotate);
+    } else {
+      setMonthValue(e.target.value);
+    }
     // Clear error value when user starts typing.
     setErrors(prev => ({...prev, monthInput: ""}))
   }
 
   function handleYearValueChange(e) {
     e.preventDefault();
-    setYearValue(e.target.value.length === 5 ? e.target.value.slice(0, 4) : e.target.value);
+    if (e.target.value.length === 5) {
+      setYearValue(e.target.value.slice(0, 4));
+      setRotate(!rotate);
+    } else {
+      setYearValue(e.target.value);
+    }
     // Clear error value when user starts typing.
-    setErrors(prev => ({...prev, yearInput: ""}))
+    setErrors(prev => ({...prev, yearInput: ""}));
   }
 
   function isLeapYear(year) {
@@ -119,7 +135,8 @@ function App() {
     <div className="App">
       <form onSubmit={calculateAge}>
         <motion.div 
-          
+          animate={{ rotate: rotate ? 360 : 0}}
+          initial={{ rotate: 0 }}
           className="input-container"
         >  
           <label style={{color: errors.dayInput && "hsl(0, 100%, 67%)"}}>DAY</label>
@@ -133,7 +150,11 @@ function App() {
           {errors.dayInput && <p>{errors.dayInput}</p>}
         </motion.div>
 
-        <div className="input-container">
+        <motion.div 
+          animate={{ rotate: rotate ? 360 : null }}
+          initial={{ rotate: 0 }}
+          className="input-container"
+        > 
           <label style={{color: errors.monthInput && "hsl(0, 100%, 67%)"}}>MONTH</label>
           <input type="text" 
                  value={monthValue} 
@@ -141,9 +162,13 @@ function App() {
                  style={{border: errors.monthInput && "1px solid hsl(0, 100%, 67%)"}}
           />
           {errors.monthInput && <p>{errors.monthInput}</p>}
-        </div>
+        </motion.div>
 
-        <div className="input-container">
+        <motion.div 
+          animate={{ rotate: rotate ? 360 : 0 }}
+          initial={{ rotate: 0 }}
+          className="input-container"
+        > 
           <label style={{color: errors.yearInput && "hsl(0, 100%, 67%)"}}>YEAR</label>
           <input type="text" 
                  value={yearValue} 
@@ -151,7 +176,7 @@ function App() {
                  style={{border: errors.yearInput && "1px solid hsl(0, 100%, 67%)"}}   
           />
           {errors.yearInput && <p>{errors.yearInput}</p>}
-        </div>
+        </motion.div>
 
         <button className="submit-btn">Submit</button>
       </form>
