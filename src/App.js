@@ -1,5 +1,6 @@
 import './App.css';
 import { useState } from "react";
+import { motion } from "framer-motion";
 
 function App() {
 
@@ -75,10 +76,15 @@ function App() {
 
     if (isNaN(day) || day > daysInMonth(month, year) || day < 1) {
       newErrors.dayInput = `Must be a valid day`;
-    } 
+    } else if (day > currentDate.getDate() && month >= currentDate.getMonth() + 1 && year === currentDate.getFullYear()) {
+      newErrors.dayInput = `Must be a past date`
+    }
     if (isNaN(month) || month > 12 || month < 1) {
       newErrors.monthInput = "Must be a valid month";
-    } 
+    } else if (month > currentDate.getMonth() + 1 && year === currentDate.getFullYear()) {
+      //prevent a future date
+      newErrors.monthInput = `Must be a past date`;
+    }
     if (isNaN(year) || year > currentDate.getFullYear()) {
       newErrors.yearInput = "Must be in the past";
     } else if (year < 1900) {
@@ -112,17 +118,20 @@ function App() {
   return (
     <div className="App">
       <form onSubmit={calculateAge}>
-        <div className="input-container">
+        <motion.div 
+          
+          className="input-container"
+        >  
           <label style={{color: errors.dayInput && "hsl(0, 100%, 67%)"}}>DAY</label>
           <input type="text" 
                  className={Object.keys(newErrors).length ? "invalid" : "date-input"}
                  value={dayValue} 
                  onChange={handleDayValueChange}
-                 style={{border: errors.dayInput && "1px solid hsl(0, 100%, 67%)"}}
-                 autofocus
+                 style={{border: errors.dayInput && "1px solid hsl(0, 100%, 67%)",}}
+                 autoFocus
           />
           {errors.dayInput && <p>{errors.dayInput}</p>}
-        </div>
+        </motion.div>
 
         <div className="input-container">
           <label style={{color: errors.monthInput && "hsl(0, 100%, 67%)"}}>MONTH</label>
