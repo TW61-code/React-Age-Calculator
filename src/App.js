@@ -1,6 +1,7 @@
 import './App.css';
+import Input from "./Input.jsx"
+import { motion } from "framer-motion"
 import { useState } from "react";
-import { motion } from "framer-motion";
 
 function App() {
 
@@ -38,8 +39,8 @@ function App() {
   function handleDayValueChange(e) {
     e.preventDefault();
     if (e.target.value.length === 3) {
-      setDayValue(e.target.value.slice(0, 2));
-      setRotate(!rotate);
+      setDayValue(e.target.value.slice(0, 2));//Prevent the input field from exceeding 2 digits
+      setRotate(!rotate);//Form of indication to the user, potraying that they have reached the inputs max length
     } else {
       setDayValue(e.target.value);
     }
@@ -129,58 +130,39 @@ function App() {
     setDaysOld(daysOld);
     setMonthsOld(monthsOld);
     setYearsOld(yearsOld);
+
   }
 
   return (
     <div className="App">
       <form onSubmit={calculateAge}>
-        <motion.div 
-          animate={{ rotate: rotate ? 360 : 0}}
-          initial={{ rotate: 0 }}
-          className="input-container"
-        >  
-          <label style={{color: errors.dayInput && "hsl(0, 100%, 67%)"}}>DAY</label>
-          <input type="text" 
-                 className={Object.keys(newErrors).length ? "invalid" : "date-input"}
-                 value={dayValue} 
-                 onChange={handleDayValueChange}
-                 style={{border: errors.dayInput && "1px solid hsl(0, 100%, 67%)",}}
-                 autoFocus
-          />
-          {errors.dayInput && <p>{errors.dayInput}</p>}
-        </motion.div>
+        <Input 
+          onChange={handleDayValueChange}
+          label="DAY"
+          value={dayValue}
+          error={errors.dayInput}
+          rotate={rotate}
+          onRotate={() => setRotate(!rotate)}
+        />
 
-        <motion.div 
-          animate={{ rotate: rotate ? 360 : null }}
-          initial={{ rotate: 0 }}
-          className="input-container"
-        > 
-          <label style={{color: errors.monthInput && "hsl(0, 100%, 67%)"}}>MONTH</label>
-          <input type="text" 
-                 value={monthValue} 
-                 onChange={handleMonthValueChange}
-                 style={{border: errors.monthInput && "1px solid hsl(0, 100%, 67%)"}}
-          />
-          {errors.monthInput && <p>{errors.monthInput}</p>}
-        </motion.div>
+        <Input 
+          onChange={handleMonthValueChange}
+          label="MONTH"
+          value={monthValue}
+          error={errors.monthInput}
+          rotate={rotate}
+        />
 
-        <motion.div 
-          animate={{ rotate: rotate ? 360 : 0 }}
-          initial={{ rotate: 0 }}
-          className="input-container"
-        > 
-          <label style={{color: errors.yearInput && "hsl(0, 100%, 67%)"}}>YEAR</label>
-          <input type="text" 
-                 value={yearValue} 
-                 onChange={handleYearValueChange}
-                 style={{border: errors.yearInput && "1px solid hsl(0, 100%, 67%)"}}   
-          />
-          {errors.yearInput && <p>{errors.yearInput}</p>}
-        </motion.div>
-
-        <button className="submit-btn">Submit</button>
+        <Input 
+          onChange={handleYearValueChange}
+          label="YEAR"
+          value={yearValue}
+          error={errors.yearInput}
+          rotate={rotate}
+        />
+      
+        <button>SUBMIT</button>
       </form>
-
       <main>
         <div className="display-age-container">
           <h1><span>{yearsOld}</span><i>years</i></h1>
