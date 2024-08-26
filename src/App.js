@@ -1,6 +1,5 @@
 import './App.css';
 import Input from "./Input.jsx"
-import { motion } from "framer-motion"
 import { useState } from "react";
 
 function App() {
