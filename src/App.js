@@ -1,5 +1,6 @@
 import './App.css';
-import Input from "./Input.jsx"
+import Input from "./Input.jsx";
+import HandleValueChange from "./HandleValueChange.jsx";
 import { useState } from "react";
 
 function App() {
@@ -33,43 +34,7 @@ function App() {
       12: 31
     }
     return daysInMonths[month];
-  }
-
-  function handleDayValueChange(e) {
-    e.preventDefault();
-    if (e.target.value.length === 3) {
-      setDayValue(e.target.value.slice(0, 2));//Prevent the input field from exceeding 2 digits
-      setRotate(!rotate);//Form of indication to the user, potraying that they have reached the inputs max length
-    } else {
-      setDayValue(e.target.value);
-    }
-    // Clear error value when user starts typing.
-    setErrors(prev => ({...prev, dayInput: ""}))
-  }
-
-  function handleMonthValueChange(e) {
-    e.preventDefault();
-    if (e.target.value.length === 3) {
-      setMonthValue(e.target.value.slice(0, 2));
-      setRotate(!rotate);
-    } else {
-      setMonthValue(e.target.value);
-    }
-    // Clear error value when user starts typing.
-    setErrors(prev => ({...prev, monthInput: ""}))
-  }
-
-  function handleYearValueChange(e) {
-    e.preventDefault();
-    if (e.target.value.length === 5) {
-      setYearValue(e.target.value.slice(0, 4));
-      setRotate(!rotate);
-    } else {
-      setYearValue(e.target.value);
-    }
-    // Clear error value when user starts typing.
-    setErrors(prev => ({...prev, yearInput: ""}));
-  }
+  }   
 
   function isLeapYear(year) {
     return (year % 4 === 0 && year % 100 !== 0) || (year % 400 === 0);
@@ -136,7 +101,15 @@ function App() {
     <div className="App">
       <form onSubmit={calculateAge}>
         <Input 
-          onChange={handleDayValueChange}
+          onChange={(e) => HandleValueChange({
+            e,
+            maxLength: 3,
+            setValue: setDayValue,
+            setRotate,
+            setErrors,
+            rotate,
+            error: "dayInput"
+          })}
           label="DAY"
           value={dayValue}
           error={errors.dayInput}
@@ -145,7 +118,15 @@ function App() {
         />
 
         <Input 
-          onChange={handleMonthValueChange}
+          onChange={(e) => HandleValueChange({
+            e,
+            maxLength: 3,
+            setValue: setMonthValue,
+            setRotate,
+            setErrors,
+            rotate,
+            error: "monthInput"
+          })}
           label="MONTH"
           value={monthValue}
           error={errors.monthInput}
@@ -153,7 +134,15 @@ function App() {
         />
 
         <Input 
-          onChange={handleYearValueChange}
+          onChange={(e) => HandleValueChange({
+            e,
+            maxLength: 5,
+            setValue: setYearValue,
+            setRotate,
+            setErrors,
+            rotate,
+            error: "yearInput"
+          })}          
           label="YEAR"
           value={yearValue}
           error={errors.yearInput}
