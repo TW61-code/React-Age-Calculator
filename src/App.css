@@ -56,10 +56,10 @@ input:focus {
 }
 
 button {
-  width: 75px;
-  height: 75px;
+  cursor: pointer;
+  width: 65px;
+  height: 65px;
   border: none;
-  color: white;
   border-radius: 100%;
   position: absolute;
   margin-left: auto;
@@ -69,6 +69,10 @@ button {
   bottom: -37.5px;
   text-align: center;
   background-color: var(--primary-font-color);
+}
+
+button:active {
+  background-color: black;
 }
 
 h1 {

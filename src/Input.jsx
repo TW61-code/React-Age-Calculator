@@ -5,7 +5,8 @@ function Input({
     value,
     onChange,
     rotate,
-    error
+    error,
+    placeHolder
 }) {
 
     return (
@@ -13,15 +14,17 @@ function Input({
         {/* set the error styling if a specific input field is invalid */}
           <label style={{color: error && "hsl(0, 100%, 67%)"}}>{label}</label>
           <motion.input 
-                         /* Animation to indicate to the user that the input field cannot take any more values. */
-                 animate={{ rotate: rotate ? 360 : 0 }}
-                 initial={{ rotate: 0 }}
+                /* Animation to indicate to the user that the input field cannot take any more values. */
+                 transition={{ type: "spring", stiffness: 200 }}
+                 whileHover={{ scale: 1.1 }}
+                 animate={{ scale: rotate ? [1.1, 1, 1.1, 1] : 1 }}
                  type="text" 
                  className={error ? "invalid" : "valid"}
                  value={value} 
                  onChange={onChange}
                  style={{border: error && "1px solid hsl(0, 100%, 67%)"}}
                  autoFocus={label === "DAY"}
+                 placeholder={placeHolder}
             />
           {error && <p>{error}</p>}
         </div>

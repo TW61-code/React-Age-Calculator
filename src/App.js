@@ -1,5 +1,6 @@
 import './App.css';
 import Input from "./Input.jsx";
+import { motion } from "framer-motion";
 import HandleValueChange from "./HandleValueChange.jsx";
 import { useState } from "react";
 
@@ -55,21 +56,27 @@ function App() {
     let monthsOld = currentDate.getMonth() - birthday.getMonth();
     let daysOld = currentDate.getDate() - birthday.getDate();
 
-    if (isNaN(day) || day > daysInMonth(month, year) || day < 1) {
+    if (isNaN(day) || day < 1) {
+      newErrors.dayInput = "This field is required"
+    } else if (day > daysInMonth(month, year)) {
       newErrors.dayInput = `Must be a valid day`;
     } else if (day > currentDate.getDate() && month >= currentDate.getMonth() + 1 && year === currentDate.getFullYear()) {
       newErrors.dayInput = `Must be a past date`
     }
-    if (isNaN(month) || month > 12 || month < 1) {
+    if (isNaN(month) || month < 1) {
+      newErrors.monthInput = "This field is required"
+    } else if (month > 12) {
       newErrors.monthInput = "Must be a valid month";
     } else if (month > currentDate.getMonth() + 1 && year === currentDate.getFullYear()) {
       //prevent a future date
       newErrors.monthInput = `Must be a past date`;
     }
-    if (isNaN(year) || year > currentDate.getFullYear()) {
+    if (isNaN(year) || year < 1) {
+      newErrors.yearInput = "This field is required"
+    } else if (year > currentDate.getFullYear()) {
       newErrors.yearInput = "Must be in the past";
     } else if (year < 1900) {
-      newErrors.yearInput = "1900 is minnimum year";
+      newErrors.yearInput = "Year must be 1900 +";
     } else if (isLeapYear(year) && month === 2 && day === 29) {
       setErrors(prev => ({...prev, dayInput: ""}))
     }
@@ -110,6 +117,7 @@ function App() {
             rotate,
             error: "dayInput"
           })}
+          placeHolder="DD"
           label="DAY"
           value={dayValue}
           error={errors.dayInput}
@@ -127,6 +135,7 @@ function App() {
             rotate,
             error: "monthInput"
           })}
+          placeHolder="MM"
           label="MONTH"
           value={monthValue}
           error={errors.monthInput}
@@ -142,14 +151,25 @@ function App() {
             setErrors,
             rotate,
             error: "yearInput"
-          })}          
+          })}   
+          placeHolder="YYYY"       
           label="YEAR"
           value={yearValue}
           error={errors.yearInput}
           rotate={rotate}
         />
       
-        <button>SUBMIT</button>
+        <motion.button
+          whileHover={{ scale: 1.2 }}
+          whileTap={{ scale: 0.8 }}
+          transition={{ type: "spring", stiffness: 200 }}
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="46" height="44" viewBox="0 0 46 44">
+          <g fill="none" stroke="#FFF" stroke-width="2">
+            <path d="M1 22.019C8.333 21.686 23 25.616 23 44M23 44V0M45 22.019C37.667 21.686 23 25.616 23 44"/>
+          </g>
+          </svg>
+        </motion.button>
       </form>
       <main>
         <div className="display-age-container">
