@@ -11,7 +11,7 @@ function App() {
   const [yearValue, setYearValue] = useState();
   const [daysOld, setDaysOld] = useState("--");
   const [monthsOld, setMonthsOld] = useState("--");
-  const [yearsOld, setYearsOld] = useState("--");
+  let [yearsOld, setYearsOld] = useState("--");
   const [errors, setErrors] = useState({});
   const [rotate, setRotate] = useState(false);
 
@@ -102,10 +102,31 @@ function App() {
     setMonthsOld(monthsOld);
     setYearsOld(yearsOld);
 
+    const counters = document.querySelectorAll("span");
+
+    counters.forEach(counter => {
+      let initialValue = 0;
+      const finalValue = counter.dataset.count;
+
+      console.log("final value", finalValue);
+
+      const counting = setInterval(updateAge, 1);
+
+      function updateAge() {
+        setYearsOld(initialValue + 1);
+
+        if (yearsOld >= finalValue) {
+          clearInterval(counting);  
+        }
+      }
+    })
   }
 
+  // const years = parseInt(yearsOld);
+  // console.log(years);
+
   return (
-    <div className="App">
+    <div className="App"> 
       <form onSubmit={calculateAge}>
         <Input 
           onChange={(e) => HandleValueChange({
@@ -173,9 +194,9 @@ function App() {
       </form>
       <main>
         <div className="display-age-container">
-          <h1><span>{yearsOld}</span><i>years</i></h1>
-          <h1><span>{monthsOld}</span><i>months</i></h1>
-          <h1><span>{daysOld}</span><i>days</i></h1>
+          <h1><span className="counter" data-count={yearsOld}>--</span><i>years</i></h1>
+          <h1 data-count={monthsOld}><span>--</span><i>months</i></h1>
+          <h1 data-count={daysOld}><span>--</span><i>days</i></h1>
         </div>
       </main>
     </div>
