@@ -2,6 +2,7 @@ import './App.css';
 import Input from "./Input.jsx";
 import { motion } from "framer-motion";
 import HandleValueChange from "./HandleValueChange.jsx";
+import SetErrors from './SetErrors.js';
 import { useState } from "react";
 
 function App() {
@@ -31,7 +32,7 @@ function App() {
   }
 
   // Create an object to store error values when user interactions are not valid
-  const newErrors = {};
+  let newErrors = {};
 
   function daysInMonth(month, year) {
     const daysInMonths = {
@@ -60,46 +61,34 @@ function App() {
     
     e.preventDefault();
 
-    const day = parseInt(dayValue);
-    const month = parseInt(monthValue);
-    const year = parseInt(yearValue);
+    let day = parseInt(dayValue);
+    let month = parseInt(monthValue);
+    let year = parseInt(yearValue);
 
-    const currentDate = new Date();
+    let currentDate = new Date();
     const birthday = new Date(year, month - 1, day);
 
     let yearsOld = currentDate.getFullYear() - birthday.getFullYear();
     let monthsOld = currentDate.getMonth() - birthday.getMonth();
     let daysOld = currentDate.getDate() - birthday.getDate();
 
-    if (isNaN(day) || day < 1) {
-      newErrors.dayInput = "This field is required"
-    } else if (day > daysInMonth(month, year)) {
-      newErrors.dayInput = `Must be a valid day`;
-    } else if (day > currentDate.getDate() && month >= currentDate.getMonth() + 1 && year === currentDate.getFullYear()) {
-      newErrors.dayInput = `Must be a past date`
-    }
-    if (isNaN(month) || month < 1) {
-      newErrors.monthInput = "This field is required"
-    } else if (month > 12) {
-      newErrors.monthInput = "Must be a valid month";
-    } else if (month > currentDate.getMonth() + 1 && year === currentDate.getFullYear()) {
-      //prevent a future date
-      newErrors.monthInput = `Must be a past date`;
-    }
-    if (isNaN(year) || year < 1) {
-      newErrors.yearInput = "This field is required"
-    } else if (year > currentDate.getFullYear()) {
-      newErrors.yearInput = "Must be in the past";
-    } else if (year < 1900) {
-      newErrors.yearInput = "Year must be 1900 +";
-    } else if (isLeapYear(year) && month === 2 && day === 29) {
-      setErrors(prev => ({...prev, dayInput: ""}))
-    }
+    SetErrors({
+      day: day,
+      month: month,
+      year: year,
+      newErrors: newErrors,
+      currentDate: currentDate,
+      //setErrors is setErrors so don't declare?
+      setErrors,
+      isLeapYear,
+      daysInMonth: daysInMonth
+  })
 
-    if (Object.keys(newErrors).length) {
-      setErrors(newErrors);
-      return;
-    }
+  //stop the function before displaying the calculations if there is an error from the form.
+  if (Object.keys(newErrors).length) {
+    setErrors(newErrors);
+    return;
+  }
 
     if (daysOld < 0) {
       monthsOld--;
@@ -188,9 +177,9 @@ function App() {
       </form>
       <main>
         <div className="display-age-container">
-          <h1><span className="counter" data-count={yearsOld}>{yearsOld}</span><i>years</i></h1>
-          <h1 data-count={monthsOld}><span>{monthsOld}</span><i>months</i></h1>
-          <h1 data-count={daysOld}><span>{daysOld}</span><i>days</i></h1>
+          <h1><span>{yearsOld}</span><i>years</i></h1>
+          <h1><span>{monthsOld}</span><i>months</i></h1>
+          <h1><span>{daysOld}</span><i>days</i></h1>
         </div>
       </main>
     </div>
