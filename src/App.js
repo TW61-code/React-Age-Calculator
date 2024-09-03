@@ -9,11 +9,26 @@ function App() {
   const [dayValue,   setDayValue] = useState();
   const [monthValue, setMonthValue] = useState();
   const [yearValue, setYearValue] = useState();
-  const [daysOld, setDaysOld] = useState("--");
-  const [monthsOld, setMonthsOld] = useState("--");
-  let [yearsOld, setYearsOld] = useState("--");
+  const [daysOld, setDaysOld] = useState('--');
+  const [monthsOld, setMonthsOld] = useState('--');
+  const [yearsOld, setYearsOld] = useState('--');
   const [errors, setErrors] = useState({});
   const [rotate, setRotate] = useState(false);
+
+  function animateNumbers(finalValue, setValue) {
+
+    let currentValue = 0;
+
+    const interval = setInterval(() => {
+
+      currentValue += 1;
+      setValue(currentValue);
+
+      if (currentValue >= finalValue) {
+        clearInterval(interval);
+      }
+    }, 20);
+  }
 
   // Create an object to store error values when user interactions are not valid
   const newErrors = {};
@@ -98,32 +113,11 @@ function App() {
       monthsOld += 12;
     }
 
-    setDaysOld(daysOld);
-    setMonthsOld(monthsOld);
-    setYearsOld(yearsOld);
+    animateNumbers(yearsOld, setYearsOld);
+    animateNumbers(monthsOld, setMonthsOld);
+    animateNumbers(daysOld, setDaysOld);
 
-    const counters = document.querySelectorAll("span");
-
-    counters.forEach(counter => {
-      let initialValue = 0;
-      const finalValue = counter.dataset.count;
-
-      console.log("final value", finalValue);
-
-      const counting = setInterval(updateAge, 1);
-
-      function updateAge() {
-        setYearsOld(initialValue + 1);
-
-        if (yearsOld >= finalValue) {
-          clearInterval(counting);  
-        }
-      }
-    })
   }
-
-  // const years = parseInt(yearsOld);
-  // console.log(years);
 
   return (
     <div className="App"> 
@@ -186,7 +180,7 @@ function App() {
           transition={{ type: "spring", stiffness: 200 }}
         >
           <svg xmlns="http://www.w3.org/2000/svg" width="46" height="44" viewBox="0 0 46 44">
-          <g fill="none" stroke="#FFF" stroke-width="2">
+          <g fill="none" stroke="#FFF" strokeWidth="2">
             <path d="M1 22.019C8.333 21.686 23 25.616 23 44M23 44V0M45 22.019C37.667 21.686 23 25.616 23 44"/>
           </g>
           </svg>
@@ -194,9 +188,9 @@ function App() {
       </form>
       <main>
         <div className="display-age-container">
-          <h1><span className="counter" data-count={yearsOld}>--</span><i>years</i></h1>
-          <h1 data-count={monthsOld}><span>--</span><i>months</i></h1>
-          <h1 data-count={daysOld}><span>--</span><i>days</i></h1>
+          <h1><span className="counter" data-count={yearsOld}>{yearsOld}</span><i>years</i></h1>
+          <h1 data-count={monthsOld}><span>{monthsOld}</span><i>months</i></h1>
+          <h1 data-count={daysOld}><span>{daysOld}</span><i>days</i></h1>
         </div>
       </main>
     </div>
